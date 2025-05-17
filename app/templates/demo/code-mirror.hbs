@@ -276,6 +276,10 @@
       <Input @type="checkbox" @checked={{this.syntaxHighlightDeletions}} disabled={{or (not this.originalDocument) (not this.syntaxHighlighting)}} />
       <span class="ml-2 {{unless (and this.originalDocument this.syntaxHighlighting) 'text-gray-300'}}">syntaxHighlightDeletions</span>
     </label>
+    <label class="{{labelClasses}}" title="Enable highlighting of specified line ranges">
+      <Input @type="checkbox" @checked={{this.highlightedRanges}} />
+      <span class="ml-2">highlightedRanges</span>
+    </label>
   </codemirror-options>
 
   <codemirror-options class="{{groupClasses}}">
@@ -337,6 +341,7 @@
   @foldGutter={{this.foldGutter}}
   @highlightActiveLine={{this.highlightActiveLine}}
   @highlightChanges={{this.highlightChanges}}
+  @highlightedRanges={{if this.highlightedRanges this.selectedDocument.highlightedRanges}}
   @highlightNewlines={{this.highlightNewlines}}
   @highlightSelectionMatches={{this.highlightSelectionMatches}}
   @highlightSpecialChars={{this.highlightSpecialChars}}

@@ -1,27 +1,33 @@
 import { tracked } from '@glimmer/tracking';
 import parseDiffAsDocument from 'codecrafters-frontend/utils/parse-diff-as-document';
 
+export type LinesRange = { startLine: number; endLine: number };
+
 export class ExampleDocument {
   @tracked document: string = '';
   @tracked originalDocument: string;
   @tracked filename: string;
   @tracked language: string;
+  @tracked highlightedRanges: LinesRange[];
 
   constructor({
     document = '',
     originalDocument,
     filename,
     language,
+    highlightedRanges = [],
   }: {
     document?: string;
     originalDocument?: string;
     filename: string;
     language: string;
+    highlightedRanges?: LinesRange[];
   }) {
     this.document = document;
     this.originalDocument = originalDocument || document;
     this.filename = filename;
     this.language = language;
+    this.highlightedRanges = highlightedRanges;
   }
 
   static createEmpty() {
@@ -32,7 +38,17 @@ export class ExampleDocument {
 export class DiffBasedExampleDocument extends ExampleDocument {
   @tracked diff?: string;
 
-  constructor({ diff, filename, language }: { diff?: string; filename: string; language: string }) {
+  constructor({
+    diff,
+    filename,
+    language,
+    highlightedRanges = [],
+  }: {
+    diff?: string;
+    filename: string;
+    language: string;
+    highlightedRanges?: LinesRange[];
+  }) {
     const { current: document, original: originalDocument } = parseDiffAsDocument(diff);
 
     super({
@@ -40,6 +56,7 @@ export class DiffBasedExampleDocument extends ExampleDocument {
       originalDocument,
       filename,
       language,
+      highlightedRanges,
     });
 
     this.diff = diff;
@@ -96,6 +113,10 @@ export default [
     ].join('\n'),
     filename: 'test.txt',
     language: 'text',
+    highlightedRanges: [
+      { startLine: 2, endLine: 4 },
+      { startLine: 7, endLine: 10 },
+    ],
   }),
 
   new DiffBasedExampleDocument({
@@ -142,6 +163,10 @@ export default [
     ].join('\n'),
     filename: 'test.js',
     language: 'javascript',
+    highlightedRanges: [
+      { startLine: 3, endLine: 5 },
+      { startLine: 8, endLine: 12 },
+    ],
   }),
 
   new DiffBasedExampleDocument({
@@ -156,7 +181,7 @@ export default [
       '+\t\t\t&nbsp;',
       '+\t\t</span>',
       '+\t\tAn example HTML document',
-      '+\t\tWith an invisible  ——≫ ‎ ≪——  characer',
+      '+\t\tWith an invisible  ——≫ ‎ ≪——  character',
       '+\t</body>',
       '+</html>',
     ].join('\n'),
